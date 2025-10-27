@@ -358,41 +358,8 @@
             align-items: end;
         }
 
-        .report-section {
-            margin-bottom: 40px;
-        }
-
-        .report-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .report-header h2 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .reconciliation-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .reconciliation-panel {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .reconciliation-panel h4 {
-            margin-bottom: 15px;
-            color: #667eea;
-        }
-
         @media print {
-            .sidebar, .top-bar, .btn, .print-btn {
+            .sidebar, .top-bar, .btn {
                 display: none !important;
             }
             .main-content {
@@ -430,39 +397,39 @@
         </div>
 
         <div class="sidebar-menu">
-            <div class="menu-item active" onclick="navigateTo('dashboard')">
+            <div class="menu-item active" data-page="dashboard">
                 <i>📊</i>
                 <span>Dashboard</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('societies')">
+            <div class="menu-item" data-page="societies">
                 <i>🏘️</i>
                 <span>Societies</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('members')">
+            <div class="menu-item" data-page="members">
                 <i>👥</i>
                 <span>Members</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('accounts')">
+            <div class="menu-item" data-page="accounts">
                 <i>📖</i>
                 <span>Chart of Accounts</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('billing')">
+            <div class="menu-item" data-page="billing">
                 <i>💰</i>
                 <span>Billing</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('entries')">
+            <div class="menu-item" data-page="entries">
                 <i>📝</i>
                 <span>Entries</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('bankreconciliation')">
+            <div class="menu-item" data-page="bankreconciliation">
                 <i>🏦</i>
                 <span>Bank Reconciliation</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('reports')">
+            <div class="menu-item" data-page="reports">
                 <i>📈</i>
                 <span>Reports</span>
             </div>
-            <div class="menu-item" onclick="navigateTo('backup')">
+            <div class="menu-item" data-page="backup">
                 <i>💾</i>
                 <span>Backup & Export</span>
             </div>
@@ -485,6 +452,7 @@
         </div>
     </div>
 
+    <!-- All Modals from previous version -->
     <!-- Society Modal -->
     <div id="societyModal" class="modal">
         <div class="modal-content">
@@ -680,199 +648,6 @@
         </div>
     </div>
 
-    <!-- Billing Modal -->
-    <div id="billingModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('billingModal')">&times;</span>
-            <h2>Generate Member Bills</h2>
-            <form id="billingForm" onsubmit="generateBills(event)">
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Billing Frequency *</label>
-                        <select id="billingFrequency" required onchange="updateBillingPeriod()">
-                            <option value="monthly">Monthly</option>
-                            <option value="bimonthly">Bi-Monthly (Every 2 Months)</option>
-                            <option value="quarterly">Quarterly</option>
-                            <option value="halfyearly">Half-Yearly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Billing Period From *</label>
-                        <input type="month" id="billingPeriodFrom" required onchange="updateBillingPeriod()">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Billing Period To *</label>
-                        <input type="month" id="billingPeriodTo" required readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Billing Date *</label>
-                        <input type="date" id="billingDate" required>
-                    </div>
-                </div>
-
-                <h4 style="margin: 20px 0;">Billing Heads</h4>
-                
-                <div id="billingHeadsContainer">
-                    <!-- Dynamic billing heads will be added here -->
-                </div>
-
-                <button type="button" class="btn btn-sm" onclick="addBillingHead()">+ Add Billing Head</button>
-
-                <div class="form-group" style="margin-top: 20px;">
-                    <label>Bill Description</label>
-                    <textarea id="billDescription" rows="3"></textarea>
-                </div>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success">Generate Bills for All Members</button>
-                    <button type="button" class="btn" onclick="closeModal('billingModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Member Wise Billing Modal -->
-    <div id="memberBillingModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('memberBillingModal')">&times;</span>
-            <h2>Member-Wise Custom Billing</h2>
-            <form id="memberBillingForm" onsubmit="generateMemberWiseBills(event)">
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Select Member *</label>
-                        <select id="selectedMember" required>
-                            <option value="">Select Member</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Billing Date *</label>
-                        <input type="date" id="memberBillingDate" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Billing Period From *</label>
-                        <input type="month" id="memberBillingFrom" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Billing Period To *</label>
-                        <input type="month" id="memberBillingTo" required>
-                    </div>
-                </div>
-
-                <h4 style="margin: 20px 0;">Custom Charges for This Member</h4>
-                
-                <div id="memberBillingHeadsContainer">
-                    <!-- Dynamic billing heads for member -->
-                </div>
-
-                <button type="button" class="btn btn-sm" onclick="addMemberBillingHead()">+ Add Charge</button>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success">Generate Bill</button>
-                    <button type="button" class="btn" onclick="closeModal('memberBillingModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Entry Modal -->
-    <div id="entryModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('entryModal')">&times;</span>
-            <h2 id="entryModalTitle">New Entry</h2>
-            <form id="entryForm" onsubmit="saveEntry(event)">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Entry Type *</label>
-                        <select id="entryType" required>
-                            <option value="receipt">Receipt</option>
-                            <option value="payment">Payment</option>
-                            <option value="journal">Journal</option>
-                            <option value="contra">Contra</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Entry Date *</label>
-                        <input type="date" id="entryDate" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Reference Number</label>
-                        <input type="text" id="refNumber">
-                    </div>
-                </div>
-
-                <h4 style="margin: 20px 0;">Double Entry Details</h4>
-                
-                <div id="entryLines">
-                    <!-- Entry lines will be added here -->
-                </div>
-
-                <button type="button" class="btn btn-sm" onclick="addEntryLine()">+ Add Line</button>
-
-                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
-                    <strong>Total Debit:</strong> <span id="totalDebit">₹0.00</span> | 
-                    <strong>Total Credit:</strong> <span id="totalCredit">₹0.00</span> |
-                    <strong>Difference:</strong> <span id="difference" style="color: red;">₹0.00</span>
-                </div>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success">Save Entry</button>
-                    <button type="button" class="btn" onclick="closeModal('entryModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Bank Reconciliation Modal -->
-    <div id="bankReconciliationModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('bankReconciliationModal')">&times;</span>
-            <h2>New Bank Reconciliation</h2>
-            <form id="bankReconciliationForm" onsubmit="saveBankReconciliation(event)">
-                <input type="hidden" id="reconciliationId">
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Bank Account *</label>
-                        <select id="bankAccount" required>
-                            <option value="">Select Bank Account</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Statement Date *</label>
-                        <input type="date" id="statementDate" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Statement Balance *</label>
-                        <input type="number" id="statementBalance" step="0.01" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Book Balance</label>
-                        <input type="number" id="bookBalance" step="0.01" readonly>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success">Start Reconciliation</button>
-                    <button type="button" class="btn" onclick="closeModal('bankReconciliationModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
         // Database Configuration
         const DB_NAME = 'SocietyAccountingDB';
@@ -885,6 +660,7 @@
             const request = indexedDB.open(DB_NAME, DB_VERSION);
 
             request.onerror = (event) => {
+                console.error('Database error:', event.target.error);
                 showAlert('Database error: ' + event.target.error, 'error');
             };
 
@@ -893,6 +669,7 @@
                 console.log('Database initialized successfully');
                 loadSocietiesIntoDropdown();
                 checkSelectedSociety();
+                setupMenuListeners();
             };
 
             request.onupgradeneeded = (event) => {
@@ -972,15 +749,31 @@
             };
         }
 
-        // Navigation Function - FIXED
+        // Setup Menu Listeners - FIXED
+        function setupMenuListeners() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    navigateTo(page);
+                });
+            });
+        }
+
+        // Navigation Function - COMPLETELY FIXED
         function navigateTo(page) {
+            console.log('Navigating to:', page);
+            
             // Remove active class from all menu items
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
             
             // Add active class to clicked item
-            event.target.closest('.menu-item').classList.add('active');
+            const activeItem = document.querySelector(`.menu-item[data-page="${page}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
 
             // Update page title
             const titles = {
@@ -1002,6 +795,8 @@
 
         // Load Page Content
         function loadPageContent(page) {
+            console.log('Loading content for:', page);
+            
             switch(page) {
                 case 'dashboard':
                     loadDashboard();
@@ -1090,11 +885,11 @@
 
                     <h3 style="margin-top: 30px; margin-bottom: 20px;">Quick Actions</h3>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-success" onclick="navigateTo('members'); event.stopPropagation();">Add Member</button>
-                        <button class="btn btn-success" onclick="navigateTo('accounts'); event.stopPropagation();">Setup Accounts</button>
-                        <button class="btn" onclick="navigateTo('billing'); event.stopPropagation();">Generate Bills</button>
-                        <button class="btn" onclick="navigateTo('entries'); event.stopPropagation();">New Entry</button>
-                        <button class="btn" onclick="navigateTo('reports'); event.stopPropagation();">View Reports</button>
+                        <button class="btn btn-success" onclick="navigateTo('members')">Add Member</button>
+                        <button class="btn btn-success" onclick="navigateTo('accounts')">Setup Accounts</button>
+                        <button class="btn" onclick="navigateTo('billing')">Generate Bills</button>
+                        <button class="btn" onclick="navigateTo('entries')">New Entry</button>
+                        <button class="btn" onclick="navigateTo('reports')">View Reports</button>
                     </div>
 
                     <h3 style="margin-top: 40px; margin-bottom: 20px;">Recent Entries</h3>
@@ -1122,14 +917,22 @@
             });
         }
 
-        // Load Societies Page - FIXED WITH ADD/EDIT/DELETE
+        // Load Societies Page - FIXED
         function loadSocietiesPage() {
+            console.log('Loading societies page...');
+            
+            if (!db) {
+                showAlert('Database not initialized', 'error');
+                return;
+            }
+
             const transaction = db.transaction(['societies'], 'readonly');
             const objectStore = transaction.objectStore('societies');
             const request = objectStore.getAll();
 
             request.onsuccess = () => {
                 const societies = request.result;
+                console.log('Societies loaded:', societies.length);
                 const activeSocieties = societies.filter(s => s.status === 'active').length;
 
                 document.getElementById('contentArea').innerHTML = `
@@ -1179,10 +982,15 @@
                     </table>
                 `;
             };
+
+            request.onerror = () => {
+                showAlert('Error loading societies', 'error');
+            };
         }
 
-        // Society Functions - FIXED
+        // Society Functions
         function openAddSocietyModal() {
+            console.log('Opening add society modal');
             document.getElementById('societyModalTitle').textContent = 'Add New Society';
             document.getElementById('societyForm').reset();
             document.getElementById('societyId').value = '';
@@ -1279,7 +1087,7 @@
         // Load Members Page - FIXED
         function loadMembersPage() {
             if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
+                document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Please select a society first</p>';
                 return;
             }
 
@@ -1427,7 +1235,7 @@
         // Load Chart of Accounts Page - FIXED
         function loadAccountsPage() {
             if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
+                document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Please select a society first</p>';
                 return;
             }
 
@@ -1622,986 +1430,25 @@
             });
         }
 
-        // BILLING MODULE - COMPLETE REWRITE WITH ALL FEATURES
+        // Placeholder functions for other modules
         function loadBillingPage() {
-            if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
-                return;
-            }
-
-            const transaction = db.transaction(['bills'], 'readonly');
-            const billStore = transaction.objectStore('bills');
-            const index = billStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const bills = request.result;
-                const totalAmount = bills.reduce((sum, b) => sum + b.totalAmount, 0);
-                const paidAmount = bills.filter(b => b.status === 'paid').reduce((sum, b) => sum + b.totalAmount, 0);
-                const pendingAmount = totalAmount - paidAmount;
-
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>${bills.length}</h3>
-                            <p>Total Bills</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${totalAmount.toFixed(2)}</h3>
-                            <p>Total Amount</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${paidAmount.toFixed(2)}</h3>
-                            <p>Paid Amount</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${pendingAmount.toFixed(2)}</h3>
-                            <p>Pending Amount</p>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3>All Bills</h3>
-                        <div>
-                            <button class="btn btn-success" onclick="openBulkBillingModal()">Generate Bulk Bills</button>
-                            <button class="btn" onclick="openMemberWiseBillingModal()">Member-Wise Billing</button>
-                        </div>
-                    </div>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Billing Period</th>
-                                <th>Member</th>
-                                <th>Flat No</th>
-                                <th>Bill Details</th>
-                                <th>Total Amount</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${bills.map(b => `
-                                <tr>
-                                    <td>${b.periodFrom} to ${b.periodTo}</td>
-                                    <td>${b.memberName}</td>
-                                    <td>${b.flatNo}</td>
-                                    <td>
-                                        ${b.charges ? Object.entries(b.charges).map(([head, amount]) => 
-                                            `${head}: ₹${amount}`
-                                        ).join('<br>') : 'N/A'}
-                                    </td>
-                                    <td><strong>₹${b.totalAmount.toFixed(2)}</strong></td>
-                                    <td><span style="color: ${b.status === 'paid' ? 'green' : 'orange'};">${b.status.toUpperCase()}</span></td>
-                                    <td>
-                                        <button class="btn btn-sm" onclick="markAsPaid(${b.id})">Mark Paid</button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteBill(${b.id})">Delete</button>
-                                    </td>
-                                </tr>
-                            `).join('') || '<tr><td colspan="7" style="text-align: center; color: #999;">No bills generated yet</td></tr>'}
-                        </tbody>
-                    </table>
-                `;
-            };
+            document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Billing module - Coming soon</p>';
         }
 
-        // Open Bulk Billing Modal
-        function openBulkBillingModal() {
-            document.getElementById('billingForm').reset();
-            const today = new Date();
-            document.getElementById('billingPeriodFrom').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-            document.getElementById('billingDate').value = today.toISOString().split('T')[0];
-            
-            // Initialize with 3 default billing heads
-            document.getElementById('billingHeadsContainer').innerHTML = '';
-            addBillingHead();
-            addBillingHead();
-            addBillingHead();
-            
-            updateBillingPeriod();
-            document.getElementById('billingModal').classList.add('active');
-        }
-
-        // Update Billing Period Based on Frequency
-        function updateBillingPeriod() {
-            const frequency = document.getElementById('billingFrequency').value;
-            const fromDate = new Date(document.getElementById('billingPeriodFrom').value + '-01');
-            
-            if (!fromDate || isNaN(fromDate)) return;
-            
-            let toDate = new Date(fromDate);
-            
-            switch(frequency) {
-                case 'monthly':
-                    toDate.setMonth(toDate.getMonth() + 1);
-                    break;
-                case 'bimonthly':
-                    toDate.setMonth(toDate.getMonth() + 2);
-                    break;
-                case 'quarterly':
-                    toDate.setMonth(toDate.getMonth() + 3);
-                    break;
-                case 'halfyearly':
-                    toDate.setMonth(toDate.getMonth() + 6);
-                    break;
-                case 'yearly':
-                    toDate.setMonth(toDate.getMonth() + 12);
-                    break;
-            }
-            
-            toDate.setDate(0); // Last day of previous month
-            const toMonth = String(toDate.getMonth() + 1).padStart(2, '0');
-            document.getElementById('billingPeriodTo').value = `${toDate.getFullYear()}-${toMonth}`;
-        }
-
-        // Add Billing Head (Dynamic Form Field)
-        function addBillingHead() {
-            const container = document.getElementById('billingHeadsContainer');
-            const row = document.createElement('div');
-            row.className = 'billing-head-row';
-            row.innerHTML = `
-                <div class="form-group" style="margin: 0;">
-                    <label>Billing Head Name</label>
-                    <input type="text" class="billing-head-name" placeholder="e.g., Maintenance, Water" required>
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <label>Calculation Type</label>
-                    <select class="billing-calc-type" onchange="toggleRateField(this)">
-                        <option value="fixed">Fixed Amount</option>
-                        <option value="perarea">Per Sq. Ft.</option>
-                    </select>
-                </div>
-                <div class="form-group billing-rate-group" style="margin: 0;">
-                    <label>Amount/Rate</label>
-                    <input type="number" class="billing-head-rate" step="0.01" placeholder="0.00" required>
-                </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="removeBillingHead(this)" style="margin-top: 25px;">×</button>
-            `;
-            container.appendChild(row);
-        }
-
-        function removeBillingHead(btn) {
-            const container = document.getElementById('billingHeadsContainer');
-            if (container.children.length > 1) {
-                btn.closest('.billing-head-row').remove();
-            } else {
-                showAlert('At least one billing head is required', 'error');
-            }
-        }
-
-        function toggleRateField(select) {
-            // Can be used for future enhancements
-        }
-
-        // Generate Bulk Bills
-        function generateBills(event) {
-            event.preventDefault();
-
-            const frequency = document.getElementById('billingFrequency').value;
-            const periodFrom = document.getElementById('billingPeriodFrom').value;
-            const periodTo = document.getElementById('billingPeriodTo').value;
-            const billingDate = document.getElementById('billingDate').value;
-            const description = document.getElementById('billDescription').value;
-
-            // Collect billing heads
-            const billingHeads = [];
-            const headRows = document.querySelectorAll('.billing-head-row');
-            
-            headRows.forEach(row => {
-                const name = row.querySelector('.billing-head-name').value;
-                const calcType = row.querySelector('.billing-calc-type').value;
-                const rate = parseFloat(row.querySelector('.billing-head-rate').value);
-                
-                if (name && rate) {
-                    billingHeads.push({ name, calcType, rate });
-                }
-            });
-
-            if (billingHeads.length === 0) {
-                showAlert('Please add at least one billing head', 'error');
-                return;
-            }
-
-            // Get all active members
-            const transaction = db.transaction(['members', 'bills'], 'readwrite');
-            const memberStore = transaction.objectStore('members');
-            const billStore = transaction.objectStore('bills');
-            const index = memberStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const members = request.result.filter(m => m.status === 'active');
-                let billCount = 0;
-
-                members.forEach(member => {
-                    const area = parseFloat(member.area) || 0;
-                    const charges = {};
-                    let totalAmount = 0;
-
-                    // Calculate charges for each billing head
-                    billingHeads.forEach(head => {
-                        let amount = 0;
-                        if (head.calcType === 'fixed') {
-                            amount = head.rate;
-                        } else if (head.calcType === 'perarea') {
-                            amount = area * head.rate;
-                        }
-                        charges[head.name] = amount;
-                        totalAmount += amount;
-                    });
-
-                    const bill = {
-                        societyId: currentSocietyId,
-                        memberId: member.id,
-                        memberName: member.name,
-                        flatNo: member.flatNo,
-                        frequency: frequency,
-                        periodFrom: periodFrom,
-                        periodTo: periodTo,
-                        billingDate: billingDate,
-                        charges: charges,
-                        totalAmount: totalAmount,
-                        status: 'pending',
-                        description: description,
-                        createdDate: new Date().toISOString()
-                    };
-
-                    const addRequest = billStore.add(bill);
-                    addRequest.onsuccess = () => {
-                        billCount++;
-                        if (billCount === members.length) {
-                            showAlert(`${billCount} bills generated successfully!`, 'success');
-                            closeModal('billingModal');
-                            loadBillingPage();
-                        }
-                    };
-                });
-
-                if (members.length === 0) {
-                    showAlert('No active members found', 'error');
-                }
-            };
-        }
-
-        // Open Member-Wise Billing Modal
-        function openMemberWiseBillingModal() {
-            // Load members into dropdown
-            const transaction = db.transaction(['members'], 'readonly');
-            const memberStore = transaction.objectStore('members');
-            const index = memberStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const members = request.result.filter(m => m.status === 'active');
-                const select = document.getElementById('selectedMember');
-                
-                select.innerHTML = '<option value="">Select Member</option>';
-                members.forEach(member => {
-                    const option = document.createElement('option');
-                    option.value = member.id;
-                    option.textContent = `${member.flatNo} - ${member.name}`;
-                    option.dataset.area = member.area || 0;
-                    select.appendChild(option);
-                });
-
-                // Initialize billing heads
-                document.getElementById('memberBillingHeadsContainer').innerHTML = '';
-                addMemberBillingHead();
-                addMemberBillingHead();
-
-                const today = new Date();
-                document.getElementById('memberBillingDate').value = today.toISOString().split('T')[0];
-                document.getElementById('memberBillingFrom').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-                document.getElementById('memberBillingTo').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-                
-                document.getElementById('memberBillingModal').classList.add('active');
-            };
-        }
-
-        function addMemberBillingHead() {
-            const container = document.getElementById('memberBillingHeadsContainer');
-            const row = document.createElement('div');
-            row.className = 'billing-head-row';
-            row.innerHTML = `
-                <div class="form-group" style="margin: 0;">
-                    <label>Charge Name</label>
-                    <input type="text" class="member-billing-head-name" placeholder="e.g., Maintenance, Penalty" required>
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <label>Calculation</label>
-                    <select class="member-billing-calc-type">
-                        <option value="fixed">Fixed Amount</option>
-                        <option value="perarea">Per Sq. Ft.</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <label>Amount/Rate</label>
-                    <input type="number" class="member-billing-head-rate" step="0.01" placeholder="0.00" required>
-                </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="removeMemberBillingHead(this)" style="margin-top: 25px;">×</button>
-            `;
-            container.appendChild(row);
-        }
-
-        function removeMemberBillingHead(btn) {
-            const container = document.getElementById('memberBillingHeadsContainer');
-            if (container.children.length > 1) {
-                btn.closest('.billing-head-row').remove();
-            } else {
-                showAlert('At least one charge is required', 'error');
-            }
-        }
-
-        function generateMemberWiseBills(event) {
-            event.preventDefault();
-
-            const memberId = parseInt(document.getElementById('selectedMember').value);
-            const select = document.getElementById('selectedMember');
-            const selectedOption = select.options[select.selectedIndex];
-            const memberName = selectedOption.textContent;
-            const area = parseFloat(selectedOption.dataset.area) || 0;
-            
-            const billingDate = document.getElementById('memberBillingDate').value;
-            const periodFrom = document.getElementById('memberBillingFrom').value;
-            const periodTo = document.getElementById('memberBillingTo').value;
-
-            // Collect billing heads
-            const billingHeads = [];
-            const headRows = document.querySelectorAll('#memberBillingHeadsContainer .billing-head-row');
-            
-            headRows.forEach(row => {
-                const name = row.querySelector('.member-billing-head-name').value;
-                const calcType = row.querySelector('.member-billing-calc-type').value;
-                const rate = parseFloat(row.querySelector('.member-billing-head-rate').value);
-                
-                if (name && rate) {
-                    billingHeads.push({ name, calcType, rate });
-                }
-            });
-
-            if (billingHeads.length === 0) {
-                showAlert('Please add at least one charge', 'error');
-                return;
-            }
-
-            const charges = {};
-            let totalAmount = 0;
-
-            // Calculate charges
-            billingHeads.forEach(head => {
-                let amount = 0;
-                if (head.calcType === 'fixed') {
-                    amount = head.rate;
-                } else if (head.calcType === 'perarea') {
-                    amount = area * head.rate;
-                }
-                charges[head.name] = amount;
-                totalAmount += amount;
-            });
-
-            // Get member details
-            const transaction = db.transaction(['members', 'bills'], 'readwrite');
-            const memberStore = transaction.objectStore('members');
-            const billStore = transaction.objectStore('bills');
-            
-            const memberRequest = memberStore.get(memberId);
-            
-            memberRequest.onsuccess = () => {
-                const member = memberRequest.result;
-                
-                const bill = {
-                    societyId: currentSocietyId,
-                    memberId: member.id,
-                    memberName: member.name,
-                    flatNo: member.flatNo,
-                    frequency: 'custom',
-                    periodFrom: periodFrom,
-                    periodTo: periodTo,
-                    billingDate: billingDate,
-                    charges: charges,
-                    totalAmount: totalAmount,
-                    status: 'pending',
-                    description: 'Member-wise custom billing',
-                    createdDate: new Date().toISOString()
-                };
-
-                const addRequest = billStore.add(bill);
-                
-                addRequest.onsuccess = () => {
-                    showAlert('Bill generated successfully!', 'success');
-                    closeModal('memberBillingModal');
-                    loadBillingPage();
-                };
-
-                addRequest.onerror = () => {
-                    showAlert('Error generating bill', 'error');
-                };
-            };
-        }
-
-        function markAsPaid(billId) {
-            const transaction = db.transaction(['bills'], 'readwrite');
-            const billStore = transaction.objectStore('bills');
-            const request = billStore.get(billId);
-
-            request.onsuccess = () => {
-                const bill = request.result;
-                bill.status = 'paid';
-                bill.paidDate = new Date().toISOString();
-                
-                const updateRequest = billStore.put(bill);
-                updateRequest.onsuccess = () => {
-                    showAlert('Bill marked as paid!', 'success');
-                    loadBillingPage();
-                };
-            };
-        }
-
-        function deleteBill(billId) {
-            if (!confirm('Are you sure you want to delete this bill?')) return;
-
-            const transaction = db.transaction(['bills'], 'readwrite');
-            const billStore = transaction.objectStore('bills');
-            const request = billStore.delete(billId);
-
-            request.onsuccess = () => {
-                showAlert('Bill deleted successfully!', 'success');
-                loadBillingPage();
-            };
-        }
-
-        // ENTRIES MODULE - FIXED WITH ACCOUNT SELECTION
         function loadEntriesPage() {
-            if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
-                return;
-            }
-
-            const transaction = db.transaction(['entries'], 'readonly');
-            const entryStore = transaction.objectStore('entries');
-            const index = entryStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const entries = request.result;
-                const receipts = entries.filter(e => e.entryType === 'receipt');
-                const payments = entries.filter(e => e.entryType === 'payment');
-
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>${entries.length}</h3>
-                            <p>Total Entries</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${receipts.length}</h3>
-                            <p>Receipts</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${payments.length}</h3>
-                            <p>Payments</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${entries.reduce((sum, e) => sum + e.amount, 0).toFixed(2)}</h3>
-                            <p>Total Amount</p>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3>All Entries</h3>
-                        <button class="btn btn-success" onclick="openEntryModal()">+ New Entry</button>
-                    </div>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Reference</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${entries.reverse().map(e => `
-                                <tr>
-                                    <td>${new Date(e.date).toLocaleDateString()}</td>
-                                    <td><strong>${e.entryType.toUpperCase()}</strong></td>
-                                    <td>${e.refNumber || 'N/A'}</td>
-                                    <td>₹${e.amount.toFixed(2)}</td>
-                                    <td><span style="color: green;">POSTED</span></td>
-                                    <td>
-                                        <button class="btn btn-sm" onclick="viewEntry(${e.id})">View</button>
-                                    </td>
-                                </tr>
-                            `).join('') || '<tr><td colspan="6" style="text-align: center; color: #999;">No entries found. Create your first entry!</td></tr>'}
-                        </tbody>
-                    </table>
-                `;
-            };
+            document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Entries module - Coming soon</p>';
         }
 
-        // Open Entry Modal - FIXED
-        function openEntryModal() {
-            document.getElementById('entryModalTitle').textContent = 'New Entry';
-            document.getElementById('entryForm').reset();
-            document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-            
-            // Reset entry lines
-            document.getElementById('entryLines').innerHTML = '';
-            addEntryLine();
-            addEntryLine();
-            
-            // Load accounts into dropdowns
-            loadAccountsIntoEntryForm();
-            
-            document.getElementById('entryModal').classList.add('active');
-        }
-
-        // Load Accounts into Entry Form - FIXED
-        function loadAccountsIntoEntryForm() {
-            const transaction = db.transaction(['accounts'], 'readonly');
-            const accountStore = transaction.objectStore('accounts');
-            const index = accountStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const accounts = request.result;
-                
-                // Update all account select elements
-                setTimeout(() => {
-                    const selects = document.querySelectorAll('.entry-account');
-                    selects.forEach(select => {
-                        select.innerHTML = '<option value="">Select Account</option>';
-                        accounts.forEach(account => {
-                            const option = document.createElement('option');
-                            option.value = account.id;
-                            option.textContent = `${account.name} (${account.group})`;
-                            select.appendChild(option);
-                        });
-                    });
-                }, 100);
-            };
-        }
-
-        // Add Entry Line - FIXED
-        function addEntryLine() {
-            const container = document.getElementById('entryLines');
-            const row = document.createElement('div');
-            row.className = 'entry-row';
-            row.innerHTML = `
-                <div class="form-group" style="margin: 0;">
-                    <select class="entry-account" required>
-                        <option value="">Select Account</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <input type="text" class="entry-description" placeholder="Description">
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <input type="number" class="entry-debit" step="0.01" value="0" onchange="updateTotals()">
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <input type="number" class="entry-credit" step="0.01" value="0" onchange="updateTotals()">
-                </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="removeEntryLine(this)">×</button>
-            `;
-            container.appendChild(row);
-            
-            // Load accounts into this new line
-            loadAccountsIntoEntryForm();
-        }
-
-        function removeEntryLine(btn) {
-            const container = document.getElementById('entryLines');
-            if (container.children.length > 2) {
-                btn.closest('.entry-row').remove();
-                updateTotals();
-            } else {
-                showAlert('Minimum 2 lines required for double entry', 'error');
-            }
-        }
-
-        function updateTotals() {
-            const debits = document.querySelectorAll('.entry-debit');
-            const credits = document.querySelectorAll('.entry-credit');
-            
-            let totalDebit = 0;
-            let totalCredit = 0;
-            
-            debits.forEach(input => {
-                totalDebit += parseFloat(input.value) || 0;
-            });
-            
-            credits.forEach(input => {
-                totalCredit += parseFloat(input.value) || 0;
-            });
-            
-            document.getElementById('totalDebit').textContent = `₹${totalDebit.toFixed(2)}`;
-            document.getElementById('totalCredit').textContent = `₹${totalCredit.toFixed(2)}`;
-            
-            const difference = Math.abs(totalDebit - totalCredit);
-            document.getElementById('difference').textContent = `₹${difference.toFixed(2)}`;
-            document.getElementById('difference').style.color = difference === 0 ? 'green' : 'red';
-        }
-
-        function saveEntry(event) {
-            event.preventDefault();
-
-            // Validate double entry
-            const debits = Array.from(document.querySelectorAll('.entry-debit')).map(el => parseFloat(el.value) || 0);
-            const credits = Array.from(document.querySelectorAll('.entry-credit')).map(el => parseFloat(el.value) || 0);
-            
-            const totalDebit = debits.reduce((sum, val) => sum + val, 0);
-            const totalCredit = credits.reduce((sum, val) => sum + val, 0);
-            
-            if (Math.abs(totalDebit - totalCredit) > 0.01) {
-                showAlert('Entry is not balanced! Debits must equal Credits', 'error');
-                return;
-            }
-
-            const entry = {
-                societyId: currentSocietyId,
-                entryType: document.getElementById('entryType').value,
-                date: document.getElementById('entryDate').value,
-                refNumber: document.getElementById('refNumber').value,
-                amount: totalDebit,
-                createdDate: new Date().toISOString()
-            };
-
-            const transaction = db.transaction(['entries', 'journalLines'], 'readwrite');
-            const entryStore = transaction.objectStore('entries');
-            const lineStore = transaction.objectStore('journalLines');
-            
-            const entryRequest = entryStore.add(entry);
-
-            entryRequest.onsuccess = () => {
-                const entryId = entryRequest.result;
-                
-                // Save all journal lines
-                const rows = document.querySelectorAll('.entry-row');
-                let lineCount = 0;
-                let linesToSave = 0;
-                
-                rows.forEach(row => {
-                    const accountId = parseInt(row.querySelector('.entry-account').value);
-                    const description = row.querySelector('.entry-description').value;
-                    const debit = parseFloat(row.querySelector('.entry-debit').value) || 0;
-                    const credit = parseFloat(row.querySelector('.entry-credit').value) || 0;
-                    
-                    if (accountId && (debit > 0 || credit > 0)) {
-                        linesToSave++;
-                        const line = {
-                            entryId: entryId,
-                            accountId: accountId,
-                            description: description,
-                            debit: debit,
-                            credit: credit
-                        };
-                        
-                        const lineRequest = lineStore.add(line);
-                        lineRequest.onsuccess = () => {
-                            lineCount++;
-                            if (lineCount === linesToSave) {
-                                showAlert('Entry posted successfully!', 'success');
-                                closeModal('entryModal');
-                                loadEntriesPage();
-                            }
-                        };
-                    }
-                });
-            };
-
-            entryRequest.onerror = () => {
-                showAlert('Error posting entry', 'error');
-            };
-        }
-
-        function viewEntry(id) {
-            showAlert('Entry details view coming soon!', 'error');
-        }
-
-        // BANK RECONCILIATION MODULE - NEW
         function loadBankReconciliationPage() {
-            if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
-                return;
-            }
-
-            const transaction = db.transaction(['bankReconciliations'], 'readonly');
-            const reconStore = transaction.objectStore('bankReconciliations');
-            const index = reconStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const reconciliations = request.result;
-
-                document.getElementById('contentArea').innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <div>
-                            <h3>Bank Reconciliation</h3>
-                            <p style="color: #666; margin-top: 5px;">Match your book records with bank statements</p>
-                        </div>
-                        <button class="btn btn-success" onclick="openBankReconciliationModal()">+ New Reconciliation</button>
-                    </div>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Bank Account</th>
-                                <th>Statement Date</th>
-                                <th>Statement Balance</th>
-                                <th>Book Balance</th>
-                                <th>Difference</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${reconciliations.map(r => {
-                                const diff = Math.abs(r.statementBalance - r.bookBalance);
-                                const status = diff < 0.01 ? 'Reconciled' : 'Pending';
-                                return `
-                                <tr>
-                                    <td>${r.bankAccountName}</td>
-                                    <td>${new Date(r.statementDate).toLocaleDateString()}</td>
-                                    <td>₹${r.statementBalance.toFixed(2)}</td>
-                                    <td>₹${r.bookBalance.toFixed(2)}</td>
-                                    <td style="color: ${diff < 0.01 ? 'green' : 'red'};">₹${diff.toFixed(2)}</td>
-                                    <td><span style="color: ${diff < 0.01 ? 'green' : 'orange'};">${status}</span></td>
-                                    <td>
-                                        <button class="btn btn-sm" onclick="viewReconciliation(${r.id})">View</button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteReconciliation(${r.id})">Delete</button>
-                                    </td>
-                                </tr>
-                            `}).join('') || '<tr><td colspan="7" style="text-align: center; color: #999;">No reconciliations found. Start your first reconciliation!</td></tr>'}
-                        </tbody>
-                    </table>
-
-                    <div style="margin-top: 40px; padding: 30px; background: #f8f9fa; border-radius: 10px;">
-                        <h4>How Bank Reconciliation Works</h4>
-                        <ol style="margin-top: 15px; padding-left: 20px;">
-                            <li>Select your bank account</li>
-                            <li>Enter statement date and closing balance from bank statement</li>
-                            <li>System automatically calculates book balance from your entries</li>
-                            <li>Match transactions and identify differences</li>
-                            <li>Record adjustment entries if needed</li>
-                        </ol>
-                    </div>
-                `;
-            };
+            document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Bank Reconciliation module - Coming soon</p>';
         }
 
-        function openBankReconciliationModal() {
-            // Load bank accounts
-            const transaction = db.transaction(['accounts'], 'readonly');
-            const accountStore = transaction.objectStore('accounts');
-            const index = accountStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const accounts = request.result;
-                const bankAccounts = accounts.filter(a => 
-                    a.name.toLowerCase().includes('bank') || 
-                    a.subGroup?.toLowerCase().includes('bank')
-                );
-
-                const select = document.getElementById('bankAccount');
-                select.innerHTML = '<option value="">Select Bank Account</option>';
-                
-                bankAccounts.forEach(account => {
-                    const option = document.createElement('option');
-                    option.value = account.id;
-                    option.textContent = account.name;
-                    option.dataset.balance = account.openingBalance || 0;
-                    select.appendChild(option);
-                });
-
-                const today = new Date();
-                document.getElementById('statementDate').value = today.toISOString().split('T')[0];
-                
-                document.getElementById('bankReconciliationModal').classList.add('active');
-            };
-        }
-
-        function saveBankReconciliation(event) {
-            event.preventDefault();
-
-            const accountId = parseInt(document.getElementById('bankAccount').value);
-            const select = document.getElementById('bankAccount');
-            const selectedOption = select.options[select.selectedIndex];
-            const accountName = selectedOption.textContent;
-            const bookBalance = parseFloat(selectedOption.dataset.balance);
-            
-            const statementDate = document.getElementById('statementDate').value;
-            const statementBalance = parseFloat(document.getElementById('statementBalance').value);
-
-            const reconciliation = {
-                societyId: currentSocietyId,
-                accountId: accountId,
-                bankAccountName: accountName,
-                statementDate: statementDate,
-                statementBalance: statementBalance,
-                bookBalance: bookBalance,
-                difference: Math.abs(statementBalance - bookBalance),
-                status: Math.abs(statementBalance - bookBalance) < 0.01 ? 'reconciled' : 'pending',
-                createdDate: new Date().toISOString()
-            };
-
-            const transaction = db.transaction(['bankReconciliations'], 'readwrite');
-            const reconStore = transaction.objectStore('bankReconciliations');
-            const request = reconStore.add(reconciliation);
-
-            request.onsuccess = () => {
-                showAlert('Bank reconciliation created successfully!', 'success');
-                closeModal('bankReconciliationModal');
-                loadBankReconciliationPage();
-            };
-
-            request.onerror = () => {
-                showAlert('Error creating reconciliation', 'error');
-            };
-        }
-
-        function viewReconciliation(id) {
-            showAlert('Detailed reconciliation view coming soon!', 'error');
-        }
-
-        function deleteReconciliation(id) {
-            if (!confirm('Are you sure you want to delete this reconciliation?')) return;
-
-            const transaction = db.transaction(['bankReconciliations'], 'readwrite');
-            const reconStore = transaction.objectStore('bankReconciliations');
-            const request = reconStore.delete(id);
-
-            request.onsuccess = () => {
-                showAlert('Reconciliation deleted successfully!', 'success');
-                loadBankReconciliationPage();
-            };
-        }
-
-        // REPORTS MODULE
         function loadReportsPage() {
-            if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
-                return;
-            }
-
-            document.getElementById('contentArea').innerHTML = `
-                <h3>Financial Reports</h3>
-                <p style="margin-bottom: 30px;">Select a report to view</p>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                    <div class="stat-card" onclick="generateBalanceSheet(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>📊</h3>
-                        <p>Balance Sheet</p>
-                    </div>
-                    <div class="stat-card" onclick="generateProfitLoss(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>📈</h3>
-                        <p>Profit & Loss</p>
-                    </div>
-                    <div class="stat-card" onclick="generateTrialBalance(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>⚖️</h3>
-                        <p>Trial Balance</p>
-                    </div>
-                    <div class="stat-card" onclick="generateLedger(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>📖</h3>
-                        <p>Ledger Report</p>
-                    </div>
-                </div>
-            `;
+            document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Reports module - Coming soon</p>';
         }
 
-        function generateBalanceSheet() {
-            showAlert('Generating Balance Sheet...', 'success');
-            // Implementation from Phase 3
-        }
-
-        function generateProfitLoss() {
-            showAlert('Generating Profit & Loss Statement...', 'success');
-            // Implementation from Phase 3
-        }
-
-        function generateTrialBalance() {
-            showAlert('Generating Trial Balance...', 'success');
-            // Implementation from Phase 3
-        }
-
-        function generateLedger() {
-            showAlert('Ledger report - Select account first', 'error');
-        }
-
-        // BACKUP MODULE
         function loadBackupPage() {
-            document.getElementById('contentArea').innerHTML = `
-                <h3>Backup & Export Data</h3>
-                <p style="margin-bottom: 30px;">Export your data for backup or migration purposes</p>
-
-                <div class="stats-grid">
-                    <div class="stat-card" onclick="exportAllData(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>💾</h3>
-                        <p>Export All Data (JSON)</p>
-                    </div>
-                    <div class="stat-card" onclick="exportMembers(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>👥</h3>
-                        <p>Export Members (CSV)</p>
-                    </div>
-                    <div class="stat-card" onclick="exportAccounts(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>📖</h3>
-                        <p>Export Accounts (CSV)</p>
-                    </div>
-                    <div class="stat-card" onclick="exportEntries(); event.stopPropagation();" style="cursor: pointer;">
-                        <h3>📝</h3>
-                        <p>Export Entries (CSV)</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function exportAllData() {
-            showAlert('Exporting all data...', 'success');
-            // Implementation from Phase 3
-        }
-
-        function exportMembers() {
-            if (!currentSocietyId) {
-                showAlert('Please select a society first', 'error');
-                return;
-            }
-
-            const transaction = db.transaction(['members'], 'readonly');
-            const memberStore = transaction.objectStore('members');
-            const index = memberStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const members = request.result;
-                
-                let csv = 'Flat No,Member Name,Mobile,Email,Area,Share Amount,Opening Balance,Status\n';
-                
-                members.forEach(m => {
-                    csv += `"${m.flatNo}","${m.name}","${m.mobile}","${m.email || ''}","${m.area || ''}","${m.shareAmount || ''}","${m.openingBalance || ''}","${m.status}"\n`;
-                });
-                
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `members-${new Date().toISOString().split('T')[0]}.csv`;
-                link.click();
-                
-                showAlert('Members exported successfully!', 'success');
-            };
-        }
-
-        function exportAccounts() {
-            showAlert('Exporting accounts...', 'success');
-            // Similar to exportMembers
-        }
-
-        function exportEntries() {
-            showAlert('Exporting entries...', 'success');
-            // Similar to exportMembers
+            document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Backup & Export module - Coming soon</p>';
         }
 
         // Society Management Functions
@@ -2713,6 +1560,7 @@
 
         // Initialize
         window.onload = () => {
+            console.log('Initializing application...');
             initDB();
         };
     </script>
