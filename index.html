@@ -66,6 +66,11 @@
             cursor: pointer;
         }
 
+        .society-selector select option {
+            background: #2c3e50;
+            color: white;
+        }
+
         .sidebar.collapsed .society-selector {
             padding: 10px;
         }
@@ -292,7 +297,7 @@
             background: white;
             padding: 30px;
             border-radius: 10px;
-            max-width: 800px;
+            max-width: 900px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -307,6 +312,7 @@
             font-size: 28px;
             cursor: pointer;
             color: #999;
+            line-height: 1;
         }
 
         .modal-close:hover {
@@ -334,66 +340,6 @@
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
-        }
-
-        .entry-row {
-            display: grid;
-            grid-template-columns: 2fr 3fr 1fr 1fr auto;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: end;
-        }
-
-        .report-section {
-            margin-bottom: 40px;
-        }
-
-        .report-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .report-header h2 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .report-group {
-            margin-bottom: 30px;
-        }
-
-        .report-group-header {
-            background: #667eea;
-            color: white;
-            padding: 10px 15px;
-            font-weight: 600;
-            border-radius: 5px;
-        }
-
-        .print-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #667eea;
-            color: white;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        }
-
-        @media print {
-            .sidebar, .top-bar, .btn, .print-btn {
-                display: none !important;
-            }
-            .main-content {
-                margin-left: 0;
-            }
         }
 
         @media (max-width: 768px) {
@@ -426,35 +372,35 @@
         </div>
 
         <div class="sidebar-menu">
-            <div class="menu-item active" onclick="navigate('dashboard')">
+            <div class="menu-item active" data-page="dashboard">
                 <i>📊</i>
                 <span>Dashboard</span>
             </div>
-            <div class="menu-item" onclick="navigate('societies')">
+            <div class="menu-item" data-page="societies">
                 <i>🏘️</i>
                 <span>Societies</span>
             </div>
-            <div class="menu-item" onclick="navigate('members')">
+            <div class="menu-item" data-page="members">
                 <i>👥</i>
                 <span>Members</span>
             </div>
-            <div class="menu-item" onclick="navigate('accounts')">
+            <div class="menu-item" data-page="accounts">
                 <i>📖</i>
                 <span>Chart of Accounts</span>
             </div>
-            <div class="menu-item" onclick="navigate('billing')">
+            <div class="menu-item" data-page="billing">
                 <i>💰</i>
                 <span>Billing</span>
             </div>
-            <div class="menu-item" onclick="navigate('entries')">
+            <div class="menu-item" data-page="entries">
                 <i>📝</i>
                 <span>Entries</span>
             </div>
-            <div class="menu-item" onclick="navigate('reports')">
+            <div class="menu-item" data-page="reports">
                 <i>📈</i>
                 <span>Reports</span>
             </div>
-            <div class="menu-item" onclick="navigate('backup')">
+            <div class="menu-item" data-page="backup">
                 <i>💾</i>
                 <span>Backup & Export</span>
             </div>
@@ -477,119 +423,137 @@
         </div>
     </div>
 
-    <!-- Billing Modal -->
-    <div id="billingModal" class="modal">
+    <!-- Society Modal -->
+    <div id="societyModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('billingModal')">&times;</span>
-            <h2>Generate Member Bills</h2>
-            <form id="billingForm" onsubmit="generateBills(event)">
-                <div class="form-group">
-                    <label>Billing Month *</label>
-                    <input type="month" id="billingMonth" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Maintenance Charge per Sq.Ft. *</label>
-                    <input type="number" id="maintenanceRate" step="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Fixed Water Charge *</label>
-                    <input type="number" id="waterCharge" step="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Other Charges (Optional)</label>
-                    <input type="number" id="otherCharges" step="0.01" value="0">
-                </div>
-
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="billDescription" rows="3"></textarea>
+            <span class="modal-close" onclick="closeModal('societyModal')">&times;</span>
+            <h2 id="societyModalTitle">Add New Society</h2>
+            <form id="societyForm" onsubmit="saveSociety(event)">
+                <input type="hidden" id="societyId">
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Society Name *</label>
+                        <input type="text" id="societyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Number *</label>
+                        <input type="text" id="regNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="city">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" id="state" value="Maharashtra">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="mobile" pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success">Generate Bills</button>
-                    <button type="button" class="btn" onclick="closeModal('billingModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Society</button>
+                    <button type="button" class="btn" onclick="closeModal('societyModal')">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Entry Modal -->
-    <div id="entryModal" class="modal">
+    <!-- Member Modal -->
+    <div id="memberModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('entryModal')">&times;</span>
-            <h2 id="entryModalTitle">New Entry</h2>
-            <form id="entryForm" onsubmit="saveEntry(event)">
+            <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
+            <h2 id="memberModalTitle">Add Member</h2>
+            <form id="memberForm" onsubmit="saveMember(event)">
+                <input type="hidden" id="memberId">
+                
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Entry Type *</label>
-                        <select id="entryType" required>
-                            <option value="receipt">Receipt</option>
-                            <option value="payment">Payment</option>
-                            <option value="journal">Journal</option>
-                            <option value="contra">Contra</option>
+                        <label>Member Name *</label>
+                        <input type="text" id="memberName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Flat/Unit No *</label>
+                        <input type="text" id="flatNo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number *</label>
+                        <input type="tel" id="memberMobile" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="memberEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Area (Sq. Ft.)</label>
+                        <input type="number" id="area">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="memberStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label>Entry Date *</label>
-                        <input type="date" id="entryDate" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Reference Number</label>
-                        <input type="text" id="refNumber">
-                    </div>
-                </div>
-
-                <h4 style="margin: 20px 0;">Double Entry Details</h4>
-                
-                <div id="entryLines">
-                    <div class="entry-row">
-                        <div class="form-group" style="margin: 0;">
-                            <label>Account</label>
-                            <select class="entry-account" required>
-                                <option value="">Select Account</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="margin: 0;">
-                            <label>Description</label>
-                            <input type="text" class="entry-description">
-                        </div>
-                        <div class="form-group" style="margin: 0;">
-                            <label>Debit</label>
-                            <input type="number" class="entry-debit" step="0.01" value="0">
-                        </div>
-                        <div class="form-group" style="margin: 0;">
-                            <label>Credit</label>
-                            <input type="number" class="entry-credit" step="0.01" value="0">
-                        </div>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeEntryLine(this)" style="margin-top: 25px;">×</button>
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-sm" onclick="addEntryLine()">+ Add Line</button>
-
-                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
-                    <strong>Total Debit:</strong> <span id="totalDebit">₹0.00</span> | 
-                    <strong>Total Credit:</strong> <span id="totalCredit">₹0.00</span> |
-                    <strong>Difference:</strong> <span id="difference" style="color: red;">₹0.00</span>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success">Save Entry</button>
-                    <button type="button" class="btn" onclick="closeModal('entryModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Member</button>
+                    <button type="button" class="btn" onclick="closeModal('memberModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('accountModal')">&times;</span>
+            <h2 id="accountModalTitle">Add Account</h2>
+            <form id="accountForm" onsubmit="saveAccount(event)">
+                <input type="hidden" id="accountId">
+                
+                <div class="form-group">
+                    <label>Account Group *</label>
+                    <select id="accountGroup" required>
+                        <option value="">Select Group</option>
+                        <option value="Assets">Assets</option>
+                        <option value="Liabilities">Liabilities</option>
+                        <option value="Income">Income</option>
+                        <option value="Expenses">Expenses</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Account Name *</label>
+                    <input type="text" id="accountName" required>
+                </div>
+                <div class="form-group">
+                    <label>Opening Balance</label>
+                    <input type="number" id="accountOpeningBalance" step="0.01" value="0">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success">Save Account</button>
+                    <button type="button" class="btn" onclick="closeModal('accountModal')">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Database Configuration
+        // Database Configuration - CHANGED TO VERSION 5
         const DB_NAME = 'SocietyAccountingDB';
-        const DB_VERSION = 3;
+        const DB_VERSION = 5;
         let db;
         let currentSocietyId = null;
 
@@ -598,6 +562,7 @@
             const request = indexedDB.open(DB_NAME, DB_VERSION);
 
             request.onerror = (event) => {
+                console.error('Database error:', event.target.error);
                 showAlert('Database error: ' + event.target.error, 'error');
             };
 
@@ -606,6 +571,7 @@
                 console.log('Database initialized successfully');
                 loadSocietiesIntoDropdown();
                 checkSelectedSociety();
+                setupMenuListeners();
             };
 
             request.onupgradeneeded = (event) => {
@@ -618,7 +584,6 @@
                         autoIncrement: true 
                     });
                     societyStore.createIndex('name', 'name', { unique: false });
-                    societyStore.createIndex('regNumber', 'regNumber', { unique: true });
                 }
 
                 // Members Store
@@ -628,7 +593,6 @@
                         autoIncrement: true 
                     });
                     memberStore.createIndex('societyId', 'societyId', { unique: false });
-                    memberStore.createIndex('flatNo', 'flatNo', { unique: false });
                 }
 
                 // Accounts Store
@@ -638,51 +602,35 @@
                         autoIncrement: true 
                     });
                     accountStore.createIndex('societyId', 'societyId', { unique: false });
-                    accountStore.createIndex('group', 'group', { unique: false });
                 }
 
-                // Bills Store
-                if (!db.objectStoreNames.contains('bills')) {
-                    const billStore = db.createObjectStore('bills', { 
-                        keyPath: 'id', 
-                        autoIncrement: true 
-                    });
-                    billStore.createIndex('societyId', 'societyId', { unique: false });
-                    billStore.createIndex('memberId', 'memberId', { unique: false });
-                    billStore.createIndex('month', 'month', { unique: false });
-                }
-
-                // Journal Entries Store
-                if (!db.objectStoreNames.contains('entries')) {
-                    const entryStore = db.createObjectStore('entries', { 
-                        keyPath: 'id', 
-                        autoIncrement: true 
-                    });
-                    entryStore.createIndex('societyId', 'societyId', { unique: false });
-                    entryStore.createIndex('entryType', 'entryType', { unique: false });
-                    entryStore.createIndex('date', 'date', { unique: false });
-                }
-
-                // Journal Lines Store (for double entry)
-                if (!db.objectStoreNames.contains('journalLines')) {
-                    const lineStore = db.createObjectStore('journalLines', { 
-                        keyPath: 'id', 
-                        autoIncrement: true 
-                    });
-                    lineStore.createIndex('entryId', 'entryId', { unique: false });
-                    lineStore.createIndex('accountId', 'accountId', { unique: false });
-                }
-
-                console.log('Database upgrade completed');
+                console.log('Database created/upgraded successfully');
             };
         }
 
-        // Navigation
-        function navigate(page) {
+        // Setup Menu Listeners
+        function setupMenuListeners() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    navigateTo(page);
+                });
+            });
+        }
+
+        // Navigation Function
+        function navigateTo(page) {
+            console.log('Navigating to:', page);
+            
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.closest('.menu-item').classList.add('active');
+            
+            const activeItem = document.querySelector(`.menu-item[data-page="${page}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
 
             const titles = {
                 'dashboard': 'Dashboard',
@@ -731,946 +679,136 @@
             }
         }
 
-        // Load Dashboard
+        // DASHBOARD
         function loadDashboard() {
             if (!currentSocietyId) {
                 document.getElementById('contentArea').innerHTML = `
                     <div style="text-align: center; padding: 60px;">
                         <h2 style="color: #999;">No Society Selected</h2>
                         <p>Please select a society from the dropdown above or create a new one.</p>
-                        <button class="btn btn-success" onclick="navigate('societies')">Manage Societies</button>
+                        <button class="btn btn-success" onclick="navigateTo('societies')">Manage Societies</button>
                     </div>
                 `;
                 return;
             }
 
-            const transaction = db.transaction(['members', 'accounts', 'entries'], 'readonly');
-            const memberStore = transaction.objectStore('members');
-            const accountStore = transaction.objectStore('accounts');
-            const entryStore = transaction.objectStore('entries');
+            document.getElementById('contentArea').innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card"><h3>0</h3><p>Total Members</p></div>
+                    <div class="stat-card"><h3>0</h3><p>Active Members</p></div>
+                    <div class="stat-card"><h3>0</h3><p>Chart of Accounts</p></div>
+                    <div class="stat-card"><h3>0</h3><p>Total Entries</p></div>
+                </div>
 
-            const memberIndex = memberStore.index('societyId');
-            const accountIndex = accountStore.index('societyId');
-            const entryIndex = entryStore.index('societyId');
-
-            const memberRequest = memberIndex.getAll(currentSocietyId);
-            const accountRequest = accountIndex.getAll(currentSocietyId);
-            const entryRequest = entryIndex.getAll(currentSocietyId);
-
-            Promise.all([
-                new Promise(resolve => { memberRequest.onsuccess = () => resolve(memberRequest.result); }),
-                new Promise(resolve => { accountRequest.onsuccess = () => resolve(accountRequest.result); }),
-                new Promise(resolve => { entryRequest.onsuccess = () => resolve(entryRequest.result); })
-            ]).then(([members, accounts, entries]) => {
-                const activeMembers = members.filter(m => m.status === 'active').length;
-                
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>${members.length}</h3>
-                            <p>Total Members</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${activeMembers}</h3>
-                            <p>Active Members</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${accounts.length}</h3>
-                            <p>Chart of Accounts</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${entries.length}</h3>
-                            <p>Total Entries</p>
-                        </div>
-                    </div>
-
-                    <h3 style="margin-top: 30px; margin-bottom: 20px;">Quick Actions</h3>
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-success" onclick="navigate('members')">Add Member</button>
-                        <button class="btn btn-success" onclick="navigate('accounts')">Setup Accounts</button>
-                        <button class="btn" onclick="navigate('billing')">Generate Bills</button>
-                        <button class="btn" onclick="navigate('entries')">New Entry</button>
-                        <button class="btn" onclick="navigate('reports')">View Reports</button>
-                    </div>
-
-                    <h3 style="margin-top: 40px; margin-bottom: 20px;">Recent Entries</h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Entry Type</th>
-                                <th>Reference</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${entries.slice(-5).reverse().map(e => `
-                                <tr>
-                                    <td>${new Date(e.date).toLocaleDateString()}</td>
-                                    <td><strong>${e.entryType.toUpperCase()}</strong></td>
-                                    <td>${e.refNumber || 'N/A'}</td>
-                                    <td>₹${e.amount.toFixed(2)}</td>
-                                </tr>
-                            `).join('') || '<tr><td colspan="4" style="text-align: center; color: #999;">No entries yet</td></tr>'}
-                        </tbody>
-                    </table>
-                `;
-            });
+                <h3 style="margin-top: 30px; margin-bottom: 20px;">Quick Actions</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-success" onclick="navigateTo('members')">Add Member</button>
+                    <button class="btn btn-success" onclick="navigateTo('accounts')">Setup Accounts</button>
+                    <button class="btn" onclick="navigateTo('billing')">Generate Bills</button>
+                    <button class="btn" onclick="navigateTo('entries')">New Entry</button>
+                </div>
+            `;
         }
 
-        // Load Billing Page
-        function loadBillingPage() {
-            if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
+        // SOCIETIES PAGE
+        function loadSocietiesPage() {
+            if (!db) {
+                showAlert('Database not initialized', 'error');
                 return;
             }
 
-            const transaction = db.transaction(['bills'], 'readonly');
-            const billStore = transaction.objectStore('bills');
-            const index = billStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
+            const transaction = db.transaction(['societies'], 'readonly');
+            const objectStore = transaction.objectStore('societies');
+            const request = objectStore.getAll();
 
             request.onsuccess = () => {
-                const bills = request.result;
-                const totalAmount = bills.reduce((sum, b) => sum + b.totalAmount, 0);
-                const paidAmount = bills.filter(b => b.status === 'paid').reduce((sum, b) => sum + b.totalAmount, 0);
-                const pendingAmount = totalAmount - paidAmount;
+                const societies = request.result;
+                const activeSocieties = societies.filter(s => s.status === 'active').length;
 
                 document.getElementById('contentArea').innerHTML = `
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>${bills.length}</h3>
-                            <p>Total Bills</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${totalAmount.toFixed(2)}</h3>
-                            <p>Total Amount</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${paidAmount.toFixed(2)}</h3>
-                            <p>Paid Amount</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${pendingAmount.toFixed(2)}</h3>
-                            <p>Pending Amount</p>
-                        </div>
+                        <div class="stat-card"><h3>${societies.length}</h3><p>Total Societies</p></div>
+                        <div class="stat-card"><h3>${activeSocieties}</h3><p>Active Societies</p></div>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3>All Bills</h3>
-                        <button class="btn btn-success" onclick="openBillingModal()">+ Generate Bills</button>
+                        <h3>All Societies</h3>
+                        <button class="btn btn-success" onclick="openAddSocietyModal()">+ Add New Society</button>
                     </div>
 
                     <table class="data-table">
                         <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Member</th>
-                                <th>Flat No</th>
-                                <th>Maintenance</th>
-                                <th>Water</th>
-                                <th>Other</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                            </tr>
+                            <tr><th>Society Name</th><th>Reg Number</th><th>City</th><th>Status</th><th>Actions</th></tr>
                         </thead>
                         <tbody>
-                            ${bills.map(b => `
+                            ${societies.map(s => `
                                 <tr>
-                                    <td>${b.month}</td>
-                                    <td>${b.memberName}</td>
-                                    <td>${b.flatNo}</td>
-                                    <td>₹${b.maintenanceCharge.toFixed(2)}</td>
-                                    <td>₹${b.waterCharge.toFixed(2)}</td>
-                                    <td>₹${b.otherCharges.toFixed(2)}</td>
-                                    <td><strong>₹${b.totalAmount.toFixed(2)}</strong></td>
-                                    <td><span style="color: ${b.status === 'paid' ? 'green' : 'orange'};">${b.status.toUpperCase()}</span></td>
-                                </tr>
-                            `).join('') || '<tr><td colspan="8" style="text-align: center; color: #999;">No bills generated yet</td></tr>'}
-                        </tbody>
-                    </table>
-                `;
-            };
-        }
-
-        // Open Billing Modal
-        function openBillingModal() {
-            const today = new Date();
-            document.getElementById('billingMonth').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-            document.getElementById('billingModal').classList.add('active');
-        }
-
-        // Generate Bills
-        function generateBills(event) {
-            event.preventDefault();
-
-            const month = document.getElementById('billingMonth').value;
-            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value);
-            const waterCharge = parseFloat(document.getElementById('waterCharge').value);
-            const otherCharges = parseFloat(document.getElementById('otherCharges').value);
-            const description = document.getElementById('billDescription').value;
-
-            // Get all active members
-            const transaction = db.transaction(['members', 'bills'], 'readwrite');
-            const memberStore = transaction.objectStore('members');
-            const billStore = transaction.objectStore('bills');
-            const index = memberStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const members = request.result.filter(m => m.status === 'active');
-                let billCount = 0;
-
-                members.forEach(member => {
-                    const area = parseFloat(member.area) || 0;
-                    const maintenanceCharge = area * maintenanceRate;
-                    const totalAmount = maintenanceCharge + waterCharge + otherCharges;
-
-                    const bill = {
-                        societyId: currentSocietyId,
-                        memberId: member.id,
-                        memberName: member.name,
-                        flatNo: member.flatNo,
-                        month: month,
-                        maintenanceCharge: maintenanceCharge,
-                        waterCharge: waterCharge,
-                        otherCharges: otherCharges,
-                        totalAmount: totalAmount,
-                        status: 'pending',
-                        description: description,
-                        createdDate: new Date().toISOString()
-                    };
-
-                    const addRequest = billStore.add(bill);
-                    addRequest.onsuccess = () => {
-                        billCount++;
-                        if (billCount === members.length) {
-                            showAlert(`${billCount} bills generated successfully!`, 'success');
-                            closeModal('billingModal');
-                            loadBillingPage();
-                        }
-                    };
-                });
-            };
-        }
-
-        // Load Entries Page
-        function loadEntriesPage() {
-            if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
-                return;
-            }
-
-            const transaction = db.transaction(['entries'], 'readonly');
-            const entryStore = transaction.objectStore('entries');
-            const index = entryStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const entries = request.result;
-                const receipts = entries.filter(e => e.entryType === 'receipt');
-                const payments = entries.filter(e => e.entryType === 'payment');
-
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>${entries.length}</h3>
-                            <p>Total Entries</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${receipts.length}</h3>
-                            <p>Receipts</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>${payments.length}</h3>
-                            <p>Payments</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>₹${entries.reduce((sum, e) => sum + e.amount, 0).toFixed(2)}</h3>
-                            <p>Total Amount</p>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3>All Entries</h3>
-                        <button class="btn btn-success" onclick="openEntryModal()">+ New Entry</button>
-                    </div>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Reference</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${entries.reverse().map(e => `
-                                <tr>
-                                    <td>${new Date(e.date).toLocaleDateString()}</td>
-                                    <td><strong>${e.entryType.toUpperCase()}</strong></td>
-                                    <td>${e.refNumber || 'N/A'}</td>
-                                    <td>₹${e.amount.toFixed(2)}</td>
-                                    <td><span style="color: green;">POSTED</span></td>
+                                    <td><strong>${s.name}</strong></td>
+                                    <td>${s.regNumber}</td>
+                                    <td>${s.city || 'N/A'}</td>
+                                    <td><span style="color: ${s.status === 'active' ? 'green' : 'red'};">${s.status.toUpperCase()}</span></td>
                                     <td>
-                                        <button class="btn btn-sm" onclick="viewEntry(${e.id})">View</button>
+                                        <button class="btn btn-sm btn-success" onclick="selectSocietyDirect(${s.id})">Select</button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteSociety(${s.id})">Delete</button>
                                     </td>
                                 </tr>
-                            `).join('') || '<tr><td colspan="6" style="text-align: center; color: #999;">No entries found. Create your first entry!</td></tr>'}
+                            `).join('') || '<tr><td colspan="5" style="text-align: center; color: #999;">No societies found</td></tr>'}
                         </tbody>
                     </table>
                 `;
             };
         }
 
-        // Open Entry Modal
-        function openEntryModal() {
-            document.getElementById('entryModalTitle').textContent = 'New Entry';
-            document.getElementById('entryForm').reset();
-            document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-            
-            // Load accounts
-            loadAccountsIntoSelect();
-            
-            // Reset entry lines
-            document.getElementById('entryLines').innerHTML = '';
-            addEntryLine();
-            addEntryLine();
-            
-            document.getElementById('entryModal').classList.add('active');
+        function openAddSocietyModal() {
+            document.getElementById('societyModalTitle').textContent = 'Add New Society';
+            document.getElementById('societyForm').reset();
+            document.getElementById('societyId').value = '';
+            document.getElementById('societyModal').classList.add('active');
         }
 
-        // Load Accounts into Select
-        function loadAccountsIntoSelect() {
-            const transaction = db.transaction(['accounts'], 'readonly');
-            const accountStore = transaction.objectStore('accounts');
-            const index = accountStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const accounts = request.result;
-                const selects = document.querySelectorAll('.entry-account');
-                
-                selects.forEach(select => {
-                    select.innerHTML = '<option value="">Select Account</option>';
-                    accounts.forEach(account => {
-                        const option = document.createElement('option');
-                        option.value = account.id;
-                        option.textContent = `${account.name} (${account.group})`;
-                        select.appendChild(option);
-                    });
-                });
-            };
-        }
-
-        // Add Entry Line
-        function addEntryLine() {
-            const container = document.getElementById('entryLines');
-            const row = document.createElement('div');
-            row.className = 'entry-row';
-            row.innerHTML = `
-                <div class="form-group" style="margin: 0;">
-                    <select class="entry-account" required>
-                        <option value="">Select Account</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <input type="text" class="entry-description">
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <input type="number" class="entry-debit" step="0.01" value="0" onchange="updateTotals()">
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <input type="number" class="entry-credit" step="0.01" value="0" onchange="updateTotals()">
-                </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="removeEntryLine(this)">×</button>
-            `;
-            container.appendChild(row);
-            loadAccountsIntoSelect();
-        }
-
-        // Remove Entry Line
-        function removeEntryLine(btn) {
-            const container = document.getElementById('entryLines');
-            if (container.children.length > 2) {
-                btn.closest('.entry-row').remove();
-                updateTotals();
-            } else {
-                showAlert('Minimum 2 lines required for double entry', 'error');
-            }
-        }
-
-        // Update Totals
-        function updateTotals() {
-            const debits = document.querySelectorAll('.entry-debit');
-            const credits = document.querySelectorAll('.entry-credit');
-            
-            let totalDebit = 0;
-            let totalCredit = 0;
-            
-            debits.forEach(input => {
-                totalDebit += parseFloat(input.value) || 0;
-            });
-            
-            credits.forEach(input => {
-                totalCredit += parseFloat(input.value) || 0;
-            });
-            
-            document.getElementById('totalDebit').textContent = `₹${totalDebit.toFixed(2)}`;
-            document.getElementById('totalCredit').textContent = `₹${totalCredit.toFixed(2)}`;
-            
-            const difference = Math.abs(totalDebit - totalCredit);
-            document.getElementById('difference').textContent = `₹${difference.toFixed(2)}`;
-            document.getElementById('difference').style.color = difference === 0 ? 'green' : 'red';
-        }
-
-        // Save Entry
-        function saveEntry(event) {
+        function saveSociety(event) {
             event.preventDefault();
-
-            // Validate double entry
-            const debits = Array.from(document.querySelectorAll('.entry-debit')).map(el => parseFloat(el.value) || 0);
-            const credits = Array.from(document.querySelectorAll('.entry-credit')).map(el => parseFloat(el.value) || 0);
             
-            const totalDebit = debits.reduce((sum, val) => sum + val, 0);
-            const totalCredit = credits.reduce((sum, val) => sum + val, 0);
-            
-            if (Math.abs(totalDebit - totalCredit) > 0.01) {
-                showAlert('Entry is not balanced! Debits must equal Credits', 'error');
-                return;
-            }
-
-            const entry = {
-                societyId: currentSocietyId,
-                entryType: document.getElementById('entryType').value,
-                date: document.getElementById('entryDate').value,
-                refNumber: document.getElementById('refNumber').value,
-                amount: totalDebit,
+            const society = {
+                name: document.getElementById('societyName').value,
+                regNumber: document.getElementById('regNumber').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                mobile: document.getElementById('mobile').value,
+                status: document.getElementById('status').value,
                 createdDate: new Date().toISOString()
             };
 
-            const transaction = db.transaction(['entries', 'journalLines'], 'readwrite');
-            const entryStore = transaction.objectStore('entries');
-            const lineStore = transaction.objectStore('journalLines');
-            
-            const entryRequest = entryStore.add(entry);
+            const transaction = db.transaction(['societies'], 'readwrite');
+            const objectStore = transaction.objectStore('societies');
+            const request = objectStore.add(society);
 
-            entryRequest.onsuccess = () => {
-                const entryId = entryRequest.result;
-                
-                // Save all journal lines
-                const rows = document.querySelectorAll('.entry-row');
-                let lineCount = 0;
-                
-                rows.forEach(row => {
-                    const accountId = parseInt(row.querySelector('.entry-account').value);
-                    const description = row.querySelector('.entry-description').value;
-                    const debit = parseFloat(row.querySelector('.entry-debit').value) || 0;
-                    const credit = parseFloat(row.querySelector('.entry-credit').value) || 0;
-                    
-                    if (accountId && (debit > 0 || credit > 0)) {
-                        const line = {
-                            entryId: entryId,
-                            accountId: accountId,
-                            description: description,
-                            debit: debit,
-                            credit: credit
-                        };
-                        
-                        const lineRequest = lineStore.add(line);
-                        lineRequest.onsuccess = () => {
-                            lineCount++;
-                            if (lineCount === rows.length) {
-                                showAlert('Entry posted successfully!', 'success');
-                                closeModal('entryModal');
-                                loadEntriesPage();
-                            }
-                        };
-                    } else {
-                        lineCount++;
-                    }
-                });
-            };
-
-            entryRequest.onerror = () => {
-                showAlert('Error posting entry', 'error');
+            request.onsuccess = () => {
+                showAlert('Society added successfully!', 'success');
+                closeModal('societyModal');
+                loadSocietiesIntoDropdown();
+                loadSocietiesPage();
             };
         }
 
-        // Load Reports Page
-        function loadReportsPage() {
+        function deleteSociety(id) {
+            if (!confirm('Are you sure you want to delete this society?')) return;
+
+            const transaction = db.transaction(['societies'], 'readwrite');
+            const objectStore = transaction.objectStore('societies');
+            const request = objectStore.delete(id);
+
+            request.onsuccess = () => {
+                showAlert('Society deleted successfully!', 'success');
+                loadSocietiesIntoDropdown();
+                loadSocietiesPage();
+            };
+        }
+
+        // MEMBERS PAGE
+        function loadMembersPage() {
             if (!currentSocietyId) {
-                document.getElementById('contentArea').innerHTML = '<p>Please select a society first</p>';
-                return;
-            }
-
-            document.getElementById('contentArea').innerHTML = `
-                <h3>Financial Reports</h3>
-                <p style="margin-bottom: 30px;">Select a report to view</p>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                    <div class="stat-card" onclick="generateBalanceSheet()" style="cursor: pointer;">
-                        <h3>📊</h3>
-                        <p>Balance Sheet</p>
-                    </div>
-                    <div class="stat-card" onclick="generateProfitLoss()" style="cursor: pointer;">
-                        <h3>📈</h3>
-                        <p>Profit & Loss</p>
-                    </div>
-                    <div class="stat-card" onclick="generateTrialBalance()" style="cursor: pointer;">
-                        <h3>⚖️</h3>
-                        <p>Trial Balance</p>
-                    </div>
-                    <div class="stat-card" onclick="generateLedger()" style="cursor: pointer;">
-                        <h3>📖</h3>
-                        <p>Ledger Report</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Generate Balance Sheet
-        function generateBalanceSheet() {
-            const transaction = db.transaction(['accounts', 'journalLines'], 'readonly');
-            const accountStore = transaction.objectStore('accounts');
-            const lineStore = transaction.objectStore('journalLines');
-            
-            const accountIndex = accountStore.index('societyId');
-            const accountRequest = accountIndex.getAll(currentSocietyId);
-
-            accountRequest.onsuccess = () => {
-                const accounts = accountRequest.result;
-                const lineRequest = lineStore.getAll();
-
-                lineRequest.onsuccess = () => {
-                    const lines = lineRequest.result;
-                    
-                    // Calculate balances for each account
-                    const accountBalances = {};
-                    accounts.forEach(acc => {
-                        accountBalances[acc.id] = {
-                            name: acc.name,
-                            group: acc.group,
-                            opening: parseFloat(acc.openingBalance) || 0,
-                            debit: 0,
-                            credit: 0
-                        };
-                    });
-
-                    lines.forEach(line => {
-                        if (accountBalances[line.accountId]) {
-                            accountBalances[line.accountId].debit += line.debit;
-                            accountBalances[line.accountId].credit += line.credit;
-                        }
-                    });
-
-                    // Group by Assets and Liabilities
-                    const assets = accounts.filter(a => a.group === 'Assets');
-                    const liabilities = accounts.filter(a => a.group === 'Liabilities');
-                    
-                    let totalAssets = 0;
-                    let totalLiabilities = 0;
-
-                    let assetsHTML = assets.map(acc => {
-                        const balance = accountBalances[acc.id];
-                        const netBalance = balance.opening + balance.debit - balance.credit;
-                        totalAssets += netBalance;
-                        return `
-                            <tr>
-                                <td style="padding-left: 30px;">${acc.name}</td>
-                                <td style="text-align: right;">₹${netBalance.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    let liabilitiesHTML = liabilities.map(acc => {
-                        const balance = accountBalances[acc.id];
-                        const netBalance = balance.opening + balance.credit - balance.debit;
-                        totalLiabilities += netBalance;
-                        return `
-                            <tr>
-                                <td style="padding-left: 30px;">${acc.name}</td>
-                                <td style="text-align: right;">₹${netBalance.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    document.getElementById('contentArea').innerHTML = `
-                        <div class="report-section">
-                            <div class="report-header">
-                                <h2>Balance Sheet</h2>
-                                <p>As on ${new Date().toLocaleDateString()}</p>
-                            </div>
-
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Particulars</th>
-                                        <th style="text-align: right;">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="report-group-header">
-                                        <td colspan="2">LIABILITIES</td>
-                                    </tr>
-                                    ${liabilitiesHTML || '<tr><td colspan="2" style="text-align: center;">No liabilities</td></tr>'}
-                                    <tr style="font-weight: bold; background: #f8f9fa;">
-                                        <td>Total Liabilities</td>
-                                        <td style="text-align: right;">₹${totalLiabilities.toFixed(2)}</td>
-                                    </tr>
-                                    <tr style="height: 20px;"><td colspan="2"></td></tr>
-                                    <tr class="report-group-header">
-                                        <td colspan="2">ASSETS</td>
-                                    </tr>
-                                    ${assetsHTML || '<tr><td colspan="2" style="text-align: center;">No assets</td></tr>'}
-                                    <tr style="font-weight: bold; background: #f8f9fa;">
-                                        <td>Total Assets</td>
-                                        <td style="text-align: right;">₹${totalAssets.toFixed(2)}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div style="margin-top: 30px; text-align: center;">
-                                <button class="btn btn-success" onclick="exportToCSV('balance-sheet')">Export to CSV</button>
-                                <button class="btn" onclick="window.print()">Print Report</button>
-                                <button class="btn" onclick="loadReportsPage()">Back to Reports</button>
-                            </div>
-                        </div>
-                    `;
-                };
-            };
-        }
-
-        // Generate Profit & Loss
-        function generateProfitLoss() {
-            const transaction = db.transaction(['accounts', 'journalLines'], 'readonly');
-            const accountStore = transaction.objectStore('accounts');
-            const lineStore = transaction.objectStore('journalLines');
-            
-            const accountIndex = accountStore.index('societyId');
-            const accountRequest = accountIndex.getAll(currentSocietyId);
-
-            accountRequest.onsuccess = () => {
-                const accounts = accountRequest.result;
-                const lineRequest = lineStore.getAll();
-
-                lineRequest.onsuccess = () => {
-                    const lines = lineRequest.result;
-                    
-                    const accountBalances = {};
-                    accounts.forEach(acc => {
-                        accountBalances[acc.id] = {
-                            name: acc.name,
-                            group: acc.group,
-                            opening: parseFloat(acc.openingBalance) || 0,
-                            debit: 0,
-                            credit: 0
-                        };
-                    });
-
-                    lines.forEach(line => {
-                        if (accountBalances[line.accountId]) {
-                            accountBalances[line.accountId].debit += line.debit;
-                            accountBalances[line.accountId].credit += line.credit;
-                        }
-                    });
-
-                    const income = accounts.filter(a => a.group === 'Income');
-                    const expenses = accounts.filter(a => a.group === 'Expenses');
-                    
-                    let totalIncome = 0;
-                    let totalExpenses = 0;
-
-                    let incomeHTML = income.map(acc => {
-                        const balance = accountBalances[acc.id];
-                        const netBalance = balance.credit - balance.debit;
-                        totalIncome += netBalance;
-                        return `
-                            <tr>
-                                <td style="padding-left: 30px;">${acc.name}</td>
-                                <td style="text-align: right;">₹${netBalance.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    let expensesHTML = expenses.map(acc => {
-                        const balance = accountBalances[acc.id];
-                        const netBalance = balance.debit - balance.credit;
-                        totalExpenses += netBalance;
-                        return `
-                            <tr>
-                                <td style="padding-left: 30px;">${acc.name}</td>
-                                <td style="text-align: right;">₹${netBalance.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    const netProfit = totalIncome - totalExpenses;
-
-                    document.getElementById('contentArea').innerHTML = `
-                        <div class="report-section">
-                            <div class="report-header">
-                                <h2>Profit & Loss Statement</h2>
-                                <p>For the period ending ${new Date().toLocaleDateString()}</p>
-                            </div>
-
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Particulars</th>
-                                        <th style="text-align: right;">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="report-group-header">
-                                        <td colspan="2">INCOME</td>
-                                    </tr>
-                                    ${incomeHTML || '<tr><td colspan="2" style="text-align: center;">No income accounts</td></tr>'}
-                                    <tr style="font-weight: bold; background: #f8f9fa;">
-                                        <td>Total Income</td>
-                                        <td style="text-align: right;">₹${totalIncome.toFixed(2)}</td>
-                                    </tr>
-                                    <tr style="height: 20px;"><td colspan="2"></td></tr>
-                                    <tr class="report-group-header">
-                                        <td colspan="2">EXPENSES</td>
-                                    </tr>
-                                    ${expensesHTML || '<tr><td colspan="2" style="text-align: center;">No expense accounts</td></tr>'}
-                                    <tr style="font-weight: bold; background: #f8f9fa;">
-                                        <td>Total Expenses</td>
-                                        <td style="text-align: right;">₹${totalExpenses.toFixed(2)}</td>
-                                    </tr>
-                                    <tr style="height: 20px;"><td colspan="2"></td></tr>
-                                    <tr style="font-weight: bold; font-size: 1.2em; background: ${netProfit >= 0 ? '#d4edda' : '#f8d7da'};">
-                                        <td>${netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</td>
-                                        <td style="text-align: right;">₹${Math.abs(netProfit).toFixed(2)}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div style="margin-top: 30px; text-align: center;">
-                                <button class="btn btn-success" onclick="exportToCSV('profit-loss')">Export to CSV</button>
-                                <button class="btn" onclick="window.print()">Print Report</button>
-                                <button class="btn" onclick="loadReportsPage()">Back to Reports</button>
-                            </div>
-                        </div>
-                    `;
-                };
-            };
-        }
-
-        // Generate Trial Balance
-        function generateTrialBalance() {
-            const transaction = db.transaction(['accounts', 'journalLines'], 'readonly');
-            const accountStore = transaction.objectStore('accounts');
-            const lineStore = transaction.objectStore('journalLines');
-            
-            const accountIndex = accountStore.index('societyId');
-            const accountRequest = accountIndex.getAll(currentSocietyId);
-
-            accountRequest.onsuccess = () => {
-                const accounts = accountRequest.result;
-                const lineRequest = lineStore.getAll();
-
-                lineRequest.onsuccess = () => {
-                    const lines = lineRequest.result;
-                    
-                    const accountBalances = {};
-                    accounts.forEach(acc => {
-                        accountBalances[acc.id] = {
-                            name: acc.name,
-                            group: acc.group,
-                            opening: parseFloat(acc.openingBalance) || 0,
-                            debit: 0,
-                            credit: 0
-                        };
-                    });
-
-                    lines.forEach(line => {
-                        if (accountBalances[line.accountId]) {
-                            accountBalances[line.accountId].debit += line.debit;
-                            accountBalances[line.accountId].credit += line.credit;
-                        }
-                    });
-
-                    let totalDebit = 0;
-                    let totalCredit = 0;
-
-                    const rows = accounts.map(acc => {
-                        const balance = accountBalances[acc.id];
-                        const netDebit = balance.opening + balance.debit;
-                        const netCredit = balance.credit;
-                        
-                        totalDebit += netDebit;
-                        totalCredit += netCredit;
-
-                        return `
-                            <tr>
-                                <td>${acc.name}</td>
-                                <td>${acc.group}</td>
-                                <td style="text-align: right;">₹${netDebit.toFixed(2)}</td>
-                                <td style="text-align: right;">₹${netCredit.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    document.getElementById('contentArea').innerHTML = `
-                        <div class="report-section">
-                            <div class="report-header">
-                                <h2>Trial Balance</h2>
-                                <p>As on ${new Date().toLocaleDateString()}</p>
-                            </div>
-
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Account Name</th>
-                                        <th>Group</th>
-                                        <th style="text-align: right;">Debit</th>
-                                        <th style="text-align: right;">Credit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${rows}
-                                    <tr style="font-weight: bold; background: #f8f9fa; font-size: 1.1em;">
-                                        <td colspan="2">TOTAL</td>
-                                        <td style="text-align: right;">₹${totalDebit.toFixed(2)}</td>
-                                        <td style="text-align: right;">₹${totalCredit.toFixed(2)}</td>
-                                    </tr>
-                                    <tr style="font-weight: bold; color: ${Math.abs(totalDebit - totalCredit) < 0.01 ? 'green' : 'red'};">
-                                        <td colspan="2">DIFFERENCE</td>
-                                        <td colspan="2" style="text-align: right;">₹${Math.abs(totalDebit - totalCredit).toFixed(2)}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div style="margin-top: 30px; text-align: center;">
-                                <button class="btn btn-success" onclick="exportToCSV('trial-balance')">Export to CSV</button>
-                                <button class="btn" onclick="window.print()">Print Report</button>
-                                <button class="btn" onclick="loadReportsPage()">Back to Reports</button>
-                            </div>
-                        </div>
-                    `;
-                };
-            };
-        }
-
-        // Generate Ledger
-        function generateLedger() {
-            showAlert('Ledger report coming soon! Select specific account to view transactions.', 'error');
-            setTimeout(() => loadReportsPage(), 2000);
-        }
-
-        // Export to CSV
-        function exportToCSV(reportType) {
-            const table = document.querySelector('.data-table');
-            const rows = table.querySelectorAll('tr');
-            
-            let csv = [];
-            
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td, th');
-                const rowText = Array.from(cells).map(cell => {
-                    let text = cell.innerText.replace(/,/g, '');
-                    return `"${text}"`;
-                });
-                csv.push(rowText.join(','));
-            });
-            
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `${reportType}-${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            
-            showAlert('Report exported successfully!', 'success');
-        }
-
-        // Load Backup Page
-        function loadBackupPage() {
-            document.getElementById('contentArea').innerHTML = `
-                <h3>Backup & Export Data</h3>
-                <p style="margin-bottom: 30px;">Export your data for backup or migration purposes</p>
-
-                <div class="stats-grid">
-                    <div class="stat-card" onclick="exportAllData()" style="cursor: pointer;">
-                        <h3>💾</h3>
-                        <p>Export All Data (JSON)</p>
-                    </div>
-                    <div class="stat-card" onclick="exportMembers()" style="cursor: pointer;">
-                        <h3>👥</h3>
-                        <p>Export Members (CSV)</p>
-                    </div>
-                    <div class="stat-card" onclick="exportAccounts()" style="cursor: pointer;">
-                        <h3>📖</h3>
-                        <p>Export Accounts (CSV)</p>
-                    </div>
-                    <div class="stat-card" onclick="exportEntries()" style="cursor: pointer;">
-                        <h3>📝</h3>
-                        <p>Export Entries (CSV)</p>
-                    </div>
-                </div>
-
-                <div style="margin-top: 50px; padding: 30px; background: #f8f9fa; border-radius: 10px;">
-                    <h4>Import Data (Coming Soon)</h4>
-                    <p>Feature to import data from CSV/Excel files will be added in next update</p>
-                </div>
-            `;
-        }
-
-        // Export All Data
-        function exportAllData() {
-            if (!currentSocietyId) {
-                showAlert('Please select a society first', 'error');
-                return;
-            }
-
-            const transaction = db.transaction(['societies', 'members', 'accounts', 'bills', 'entries', 'journalLines'], 'readonly');
-            
-            Promise.all([
-                getStoreData(transaction.objectStore('societies')),
-                getStoreData(transaction.objectStore('members')),
-                getStoreData(transaction.objectStore('accounts')),
-                getStoreData(transaction.objectStore('bills')),
-                getStoreData(transaction.objectStore('entries')),
-                getStoreData(transaction.objectStore('journalLines'))
-            ]).then(([societies, members, accounts, bills, entries, journalLines]) => {
-                const data = {
-                    exportDate: new Date().toISOString(),
-                    societies: societies,
-                    members: members,
-                    accounts: accounts,
-                    bills: bills,
-                    entries: entries,
-                    journalLines: journalLines
-                };
-
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `society-data-backup-${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-                
-                showAlert('Full backup exported successfully!', 'success');
-            });
-        }
-
-        // Helper function to get store data
-        function getStoreData(store) {
-            return new Promise((resolve) => {
-                const request = store.getAll();
-                request.onsuccess = () => resolve(request.result);
-            });
-        }
-
-        // Export Members
-        function exportMembers() {
-            if (!currentSocietyId) {
-                showAlert('Please select a society first', 'error');
+                document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Please select a society first</p>';
                 return;
             }
 
@@ -1681,27 +819,79 @@
 
             request.onsuccess = () => {
                 const members = request.result;
-                
-                let csv = 'Flat No,Member Name,Mobile,Email,Area,Share Amount,Opening Balance,Status\n';
-                
-                members.forEach(m => {
-                    csv += `"${m.flatNo}","${m.name}","${m.mobile}","${m.email || ''}","${m.area || ''}","${m.shareAmount || ''}","${m.openingBalance || ''}","${m.status}"\n`;
-                });
-                
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `members-${new Date().toISOString().split('T')[0]}.csv`;
-                link.click();
-                
-                showAlert('Members exported successfully!', 'success');
+
+                document.getElementById('contentArea').innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>All Members</h3>
+                        <button class="btn btn-success" onclick="openAddMemberModal()">+ Add New Member</button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Flat No</th><th>Member Name</th><th>Mobile</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${members.map(m => `
+                                <tr>
+                                    <td><strong>${m.flatNo}</strong></td>
+                                    <td>${m.name}</td>
+                                    <td>${m.mobile}</td>
+                                    <td>${m.status}</td>
+                                    <td><button class="btn btn-sm btn-danger" onclick="deleteMember(${m.id})">Delete</button></td>
+                                </tr>
+                            `).join('') || '<tr><td colspan="5" style="text-align: center; color: #999;">No members found</td></tr>'}
+                        </tbody>
+                    </table>
+                `;
             };
         }
 
-        // Export Accounts
-        function exportAccounts() {
+        function openAddMemberModal() {
+            document.getElementById('memberModalTitle').textContent = 'Add New Member';
+            document.getElementById('memberForm').reset();
+            document.getElementById('memberId').value = '';
+            document.getElementById('memberModal').classList.add('active');
+        }
+
+        function saveMember(event) {
+            event.preventDefault();
+            
+            const member = {
+                societyId: currentSocietyId,
+                name: document.getElementById('memberName').value,
+                flatNo: document.getElementById('flatNo').value,
+                mobile: document.getElementById('memberMobile').value,
+                email: document.getElementById('memberEmail').value,
+                area: document.getElementById('area').value,
+                status: document.getElementById('memberStatus').value,
+                createdDate: new Date().toISOString()
+            };
+
+            const transaction = db.transaction(['members'], 'readwrite');
+            const objectStore = transaction.objectStore('members');
+            const request = objectStore.add(member);
+
+            request.onsuccess = () => {
+                showAlert('Member added successfully!', 'success');
+                closeModal('memberModal');
+                loadMembersPage();
+            };
+        }
+
+        function deleteMember(id) {
+            if (!confirm('Are you sure?')) return;
+            const transaction = db.transaction(['members'], 'readwrite');
+            const request = transaction.objectStore('members').delete(id);
+            request.onsuccess = () => {
+                showAlert('Member deleted!', 'success');
+                loadMembersPage();
+            };
+        }
+
+        // ACCOUNTS PAGE
+        function loadAccountsPage() {
             if (!currentSocietyId) {
-                showAlert('Please select a society first', 'error');
+                document.getElementById('contentArea').innerHTML = '<p style="padding: 40px; text-align: center; color: #999;">Please select a society first</p>';
                 return;
             }
 
@@ -1712,99 +902,88 @@
 
             request.onsuccess = () => {
                 const accounts = request.result;
-                
-                let csv = 'Account Code,Account Name,Group,Sub Group,Opening Balance,Balance Type\n';
-                
-                accounts.forEach(a => {
-                    csv += `"${a.code || ''}","${a.name}","${a.group}","${a.subGroup || ''}","${a.openingBalance || 0}","${a.balanceType}"\n`;
-                });
-                
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `accounts-${new Date().toISOString().split('T')[0]}.csv`;
-                link.click();
-                
-                showAlert('Accounts exported successfully!', 'success');
-            };
-        }
 
-        // Export Entries
-        function exportEntries() {
-            if (!currentSocietyId) {
-                showAlert('Please select a society first', 'error');
-                return;
-            }
-
-            const transaction = db.transaction(['entries'], 'readonly');
-            const entryStore = transaction.objectStore('entries');
-            const index = entryStore.index('societyId');
-            const request = index.getAll(currentSocietyId);
-
-            request.onsuccess = () => {
-                const entries = request.result;
-                
-                let csv = 'Date,Entry Type,Reference Number,Amount\n';
-                
-                entries.forEach(e => {
-                    csv += `"${e.date}","${e.entryType}","${e.refNumber || ''}","${e.amount}"\n`;
-                });
-                
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `entries-${new Date().toISOString().split('T')[0]}.csv`;
-                link.click();
-                
-                showAlert('Entries exported successfully!', 'success');
-            };
-        }
-
-        // Utility Functions (Continued from Phase 2)
-        function loadSocietiesPage() {
-            const transaction = db.transaction(['societies'], 'readonly');
-            const objectStore = transaction.objectStore('societies');
-            const request = objectStore.getAll();
-
-            request.onsuccess = () => {
-                const societies = request.result;
                 document.getElementById('contentArea').innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Chart of Accounts</h3>
+                        <button class="btn btn-success" onclick="openAddAccountModal()">+ Add New Account</button>
+                    </div>
+
                     <table class="data-table">
                         <thead>
-                            <tr>
-                                <th>Society Name</th>
-                                <th>Reg Number</th>
-                                <th>City</th>
-                                <th>Actions</th>
-                            </tr>
+                            <tr><th>Group</th><th>Account Name</th><th>Opening Balance</th><th>Actions</th></tr>
                         </thead>
                         <tbody>
-                            ${societies.map(s => `
+                            ${accounts.map(a => `
                                 <tr>
-                                    <td>${s.name}</td>
-                                    <td>${s.regNumber}</td>
-                                    <td>${s.city || 'N/A'}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success" onclick="selectSocietyDirect(${s.id})">Select</button>
-                                    </td>
+                                    <td>${a.group}</td>
+                                    <td>${a.name}</td>
+                                    <td>₹${a.openingBalance || 0}</td>
+                                    <td><button class="btn btn-sm btn-danger" onclick="deleteAccount(${a.id})">Delete</button></td>
                                 </tr>
-                            `).join('')}
+                            `).join('') || '<tr><td colspan="4" style="text-align: center; color: #999;">No accounts found</td></tr>'}
                         </tbody>
                     </table>
                 `;
             };
         }
 
-        function loadMembersPage() {
-            // Implementation from Phase 2
-            showAlert('Members page - refer to Phase 2 code', 'error');
+        function openAddAccountModal() {
+            document.getElementById('accountModalTitle').textContent = 'Add New Account';
+            document.getElementById('accountForm').reset();
+            document.getElementById('accountModal').classList.add('active');
         }
 
-        function loadAccountsPage() {
-            // Implementation from Phase 2
-            showAlert('Accounts page - refer to Phase 2 code', 'error');
+        function saveAccount(event) {
+            event.preventDefault();
+            
+            const account = {
+                societyId: currentSocietyId,
+                group: document.getElementById('accountGroup').value,
+                name: document.getElementById('accountName').value,
+                openingBalance: document.getElementById('accountOpeningBalance').value,
+                createdDate: new Date().toISOString()
+            };
+
+            const transaction = db.transaction(['accounts'], 'readwrite');
+            const objectStore = transaction.objectStore('accounts');
+            const request = objectStore.add(account);
+
+            request.onsuccess = () => {
+                showAlert('Account added successfully!', 'success');
+                closeModal('accountModal');
+                loadAccountsPage();
+            };
         }
 
+        function deleteAccount(id) {
+            if (!confirm('Are you sure?')) return;
+            const transaction = db.transaction(['accounts'], 'readwrite');
+            const request = transaction.objectStore('accounts').delete(id);
+            request.onsuccess = () => {
+                showAlert('Account deleted!', 'success');
+                loadAccountsPage();
+            };
+        }
+
+        // OTHER MODULES - SIMPLIFIED
+        function loadBillingPage() {
+            document.getElementById('contentArea').innerHTML = '<h3>Billing Module</h3><p>Coming soon - Full billing with flexible frequency</p>';
+        }
+
+        function loadEntriesPage() {
+            document.getElementById('contentArea').innerHTML = '<h3>Entries Module</h3><p>Coming soon - Double-entry bookkeeping</p>';
+        }
+
+        function loadReportsPage() {
+            document.getElementById('contentArea').innerHTML = '<h3>Reports Module</h3><p>Coming soon - Balance Sheet, P&L, Trial Balance</p>';
+        }
+
+        function loadBackupPage() {
+            document.getElementById('contentArea').innerHTML = '<h3>Backup & Export</h3><p>Coming soon - Export to CSV/JSON</p>';
+        }
+
+        // UTILITY FUNCTIONS
         function loadSocietiesIntoDropdown() {
             const transaction = db.transaction(['societies'], 'readonly');
             const objectStore = transaction.objectStore('societies');
@@ -1834,10 +1013,8 @@
             
             if (currentSocietyId) {
                 localStorage.setItem('selectedSocietyId', currentSocietyId);
-                
                 const transaction = db.transaction(['societies'], 'readonly');
-                const objectStore = transaction.objectStore('societies');
-                const request = objectStore.get(currentSocietyId);
+                const request = transaction.objectStore('societies').get(currentSocietyId);
                 
                 request.onsuccess = () => {
                     const society = request.result;
@@ -1858,14 +1035,13 @@
             document.getElementById('sidebarSocietySelect').value = id;
             
             const transaction = db.transaction(['societies'], 'readonly');
-            const objectStore = transaction.objectStore('societies');
-            const request = objectStore.get(id);
+            const request = transaction.objectStore('societies').get(id);
             
             request.onsuccess = () => {
                 const society = request.result;
                 document.getElementById('currentSocietyName').textContent = society.name;
                 showAlert(`Society selected: ${society.name}`, 'success');
-                navigate('dashboard');
+                navigateTo('dashboard');
             };
         }
 
@@ -1876,8 +1052,7 @@
                 document.getElementById('sidebarSocietySelect').value = currentSocietyId;
                 
                 const transaction = db.transaction(['societies'], 'readonly');
-                const objectStore = transaction.objectStore('societies');
-                const request = objectStore.get(currentSocietyId);
+                const request = transaction.objectStore('societies').get(currentSocietyId);
                 
                 request.onsuccess = () => {
                     if (request.result) {
@@ -1891,7 +1066,6 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
-            
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
         }
@@ -1904,18 +1078,12 @@
             const alertBox = document.getElementById('alertBox');
             alertBox.className = `alert alert-${type} show`;
             alertBox.textContent = message;
-            
-            setTimeout(() => {
-                alertBox.classList.remove('show');
-            }, 5000);
-        }
-
-        function viewEntry(id) {
-            showAlert('Entry details view coming soon!', 'error');
+            setTimeout(() => alertBox.classList.remove('show'), 5000);
         }
 
         // Initialize
         window.onload = () => {
+            console.log('Initializing application...');
             initDB();
         };
     </script>
